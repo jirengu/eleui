@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tooltip</title>
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      border-radius: 4px;
+      box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.3);
+      padding: 16px;
+    }
+
+
+    .carousel {
+      position: relative;
+    }
+
+    .carousel .panels {
+      position: relative;
+      height: 100%;
+      height: 200px;
+      overflow: hidden;
+    }
+
+    .carousel .panels > a {
+      position: absolute;
+      left: 0;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      width: 100%;
+      height: 100%;
+      
+    }
+
+    .carousel .panels > a:nth-child(even) {
+      background: lightblue;
+    }
+
+    .carousel .panels > a:nth-child(odd) {
+      background: lightskyblue;
+    }
+
+    .carousel .panels > a:first-child {
+      z-index: 10;
+    }
+
+    .carousel .indicators {
+      position: absolute;
+      z-index: 999;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+    }
+
+    .carousel .indicators > span {
+      display: inline-block;
+      padding: 4px;
+      cursor: pointer;
+      
+    }
+    .carousel .indicators > span::after {
+      content: '';
+      display: block;
+      width: 30px;
+      height: 2px;
+      border-radius: 2px;
+      background: #c0c4cc;
+      transition: all .3s;
+    }
+
+    .carousel .indicators span.active::after {
+      background: #fff;
+    }
+
+    .carousel .arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 50%;
+      z-index: 999;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(31,45,61,.11);
+    }
+
+    .carousel .arrow::before {
+      content: '';
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-left: 1px solid #fff;
+      border-top: 1px solid #fff;
+    }
+
+    .carousel .pre {
+      left: 16px;
+      transform: translateX(-10px) translateY(-50%);
+      opacity: 0;
+      transition: all .3s;
+    }
+
+    .carousel .pre::before {
+      transform: rotate(-45deg);
+    }
+
+    .carousel  .next {
+      right: 16px;
+      transform: translateX(10px) translateY(-50%);
+      opacity: 0;
+      transition: all .3s;
+    }
+
+    .carousel .next::before {
+      transform: rotate(135deg);
+    }
+
+    .carousel:hover .pre {
+      transform: translateX(0) translateY(-50%);
+      opacity: 1;
+    }
+
+    .carousel:hover .next {
+      transform: translateX(0) translateY(-50%);
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Carousel</h2>
+    <div class="carousel">
+      <div class="panels">
+        <a href="#">1</a>
+        <a href="#">2</a>
+        <a href="#">3</a>
+        <a href="#">4</a>
+      </div>
+      <div class="arrows">
+        <span class="arrow pre"></span>
+        <span class="arrow next"></span>
+      </div>
+      <div class="indicators">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+
+  </div>
+
+
+  <script>
+
+
+class Carousel {
+  constructor($root) {
+    this.$root = $root
+    this.$preBtn = $root.querySelector('.pre')
+    this.$nextBtn = $root.querySelector('.next')
+    this.$panels = [...$root.querySelectorAll('.panels > a')]
+    this.$indicators = [...$root.querySelectorAll('.indicators span')]
+
+    this.bind()
+  }
+
+  get index() {
+    return this.$indicators.indexOf(this.$root.querySelector('.indicators .active'))
+  }
+
+  get preIndex() {
+    return (this.index - 1 + this.$indicators.length) % this.$indicators.length
+  }
+
+  get nextIndex () {
+    return (this.index + 1) % this.$indicators.length
+  }
+
+  bind() {
+    let self = this
+
+    this.$indicators.forEach($indicator => {
+      $indicator.onclick = function() {
+        let index = self.$indicators.indexOf(this)
+        self.setIndicator(index)
+        self.setPage(index)
+      }
+    })
+
+    this.$preBtn.onclick = e => {
+      let preIndex = this.preIndex
+      this.setIndicator(preIndex)
+      this.setPage(preIndex)
+    }
+
+    this.$nextBtn.onclick = e => {
+      let nextIndex = this.nextIndex
+      this.setIndicator(nextIndex)
+      this.setPage(nextIndex)
+    }
+  }
+
+  setIndicator(pageIndex) {
+      this.$indicators.forEach($indicator => $indicator.classList.remove('active'))
+      this.$indicators[pageIndex].classList.add('active')
+    }
+
+  setPage(pageIndex) {
+      this.$panels.forEach($panel => $panel.style.zIndex = 0)
+      this.$panels[pageIndex].style.zIndex = 10
+    }
+
+}
+
+new Carousel(document.querySelector('.carousel'))
+
+
+  </script>
+
+
+</body>
+
+</html>

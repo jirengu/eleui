@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Tab选项卡</title>
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      border-radius: 4px;
+      box-shadow: 0 0 4px 0px rgba(0, 0, 0, 0.3);
+      padding: 16px;
+    }
+
+    .tabs .tab-header {
+      position: relative;
+      display: flex;
+      font-size: 13px;
+      color: #303030;
+      line-height: 30px;
+      font-weight: 500;
+      border-bottom: 2px solid #ddd;
+    }
+
+    .tabs .tab-item {
+      margin-right: 30px;
+      cursor: pointer;
+    }
+
+    .tabs .line {
+      position: absolute;
+      top: 100%;
+      transform: translateX(0);
+      width: 50px;
+      height: 2px;
+      background: #409eff;
+      transition: all .3s;
+    }
+
+    .tabs .tab-item.active {
+      color: #409eff;
+    }
+
+    .tabs .tab-panel {
+      padding: 16px 0;
+      font-size: 14px;
+      display: none;
+      ;
+    }
+
+    .tabs .tab-panel.active {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Tab选项卡1</h2>
+    <div class="tabs">
+      <div class="tab-header">
+        <span class="tab-item active">用户管理</span>
+        <span class="tab-item">配置管理</span>
+        <span class="tab-item">角色管理</span>
+        <span class="tab-item">定时任务补偿</span>
+        <span class="line"></span>
+      </div>
+      <div class="tab-content">
+        <div class="tab-panel active">用户管理</div>
+        <div class="tab-panel">配置管理</div>
+        <div class="tab-panel">角色管理</div>
+        <div class="tab-panel">定时任务补偿</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Tab选项卡2</h2>
+    <div class="tabs">
+      <div class="tab-header">
+        <span class="tab-item active">用户管理</span>
+        <span class="tab-item">配置管理</span>
+        <span class="tab-item">角色管理</span>
+        <span class="tab-item">定时任务补偿</span>
+        <span class="line"></span>
+      </div>
+      <div class="tab-content">
+        <div class="tab-panel active">用户管理</div>
+        <div class="tab-panel">配置管理</div>
+        <div class="tab-panel">角色管理</div>
+        <div class="tab-panel">定时任务补偿</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    class Tabs {
+      constructor($container) {
+        this.$container = $container
+        this.$$tabItems = $container.querySelectorAll('.tab-item')
+        this.$$tab$panels = $container.querySelectorAll('.tab-panel')
+        this.$line = $container.querySelector('.line')
+
+        this.init()
+        this.bind()
+      }
+
+      init() {
+        this.$line.style.width = this.$$tabItems[0].offsetWidth + 'px'
+      }
+
+      bind() {
+        let self = this
+        this.$$tabItems.forEach($tab => {
+          $tab.onclick = function () {
+            self.$$tabItems.forEach($tab => $tab.classList.remove('active'))
+            this.classList.add('active')
+
+            self.$line.style.width = this.offsetWidth + 'px'
+            self.$line.style.transform = `translateX(${this.offsetLeft}px)`
+
+            let index = [...self.$$tabItems].indexOf(this)
+            self.$$tab$panels.forEach($panel => $panel.classList.remove('active'))
+            self.$$tab$panels[index].classList.add('active')
+          }
+        })
+      }
+    }
+
+    document.querySelectorAll('.tabs').forEach($container => new Tabs($container))
+
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Dialog</title>
+  <style>
+  .container {
+    max-width: 800px;
+    margin: 30px auto;
+    border-radius: 4px;
+    box-shadow: 0 0 4px 0px rgba(0, 0, 0,  0.3);
+    padding: 16px;
+  }
+
+  .button {
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #303030;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .button:hover {
+    border-color: lightskyblue;
+    color: lightskyblue
+  }
+
+  .button.primary {
+    background-color: lightskyblue;
+    color: #fff;
+    border: 0;
+  }
+
+  .dialog {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: all .3s;
+    display: none;
+  }
+
+  .dialog.show {
+    opacity: 1;
+  }
+
+  .dialog .main {
+    transform: translateY(-100%);
+    width: 40%;
+    background-color: #fff;
+    border-radius: 4px;
+    margin: 100px auto;
+    padding: 16px;
+    transition: all .3s;
+  }
+  .dialog.show .main {
+    transform: translateY(100px);
+  } 
+
+
+  .dialog .header {
+    font-size: 18px;
+    color: #444;
+    display: flex;
+    align-items: center;
+  }
+
+  .dialog .header .close {
+    margin-left: auto;
+    padding: 10px;
+    cursor: pointer;
+  }
+  .dialog .header .close::before,
+  .dialog .header .close::after {
+    transform: rotate(45deg);
+    content: '';
+    display: block;
+    width: 12px;
+    height: 1px;
+    background: #999;
+  }
+  .dialog .header .close::after {
+    transform: rotate(-45deg);
+    margin-top: -1px;
+  }
+
+
+  .dialog .body {
+    font-size: 14px;
+    color: #666;
+    padding: 30px 0;
+  }
+
+  .dialog .footer {
+    display: flex;
+    justify-content:flex-end;
+  }
+
+  .dialog .footer .button {
+    margin-left: 8px;
+  }
+
+  
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Dialog</h2>
+    <div class="btn-group">
+      <button class="button btn-open">打开弹窗</button>
+      <div class="dialog">
+        <div class="main">
+          <div class="header">提示 <span class="close"></span></div>
+          <div class="body">
+            <p>这是一段信息</p>
+          </div>
+          <div class="footer">
+            <button class="button btn-cancel">取消</button>
+            <button class="button primary btn-ok">确定</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class Dialog {
+      constructor($root) {
+        this.$root = $root
+
+        this.bind()
+      }
+
+      bind() {
+        let self = this
+        this.$root.querySelectorAll('.btn-cancel, .btn-ok, .close').forEach($node => {
+          $node.onclick = function() {
+            self.hide()
+          }
+        })
+        this.$root.onclick = function() {
+          self.hide()
+        }
+        this.$root.querySelector('.body').onclick = function(e) {
+          e.stopPropagation()
+        }
+      }
+
+      hide() {
+        this.$root.classList.remove('show')
+        setTimeout(()=>this.$root.style.display = 'none', 400)
+      }
+
+      show() {
+        this.$root.style.display = 'block'
+        setTimeout(()=>this.$root.classList.add('show'))
+      }
+
+    }
+
+    let $btn = document.querySelector('.btn-open')
+    let $dialog = document.querySelector('.dialog')
+    let dialog = new Dialog($dialog)
+    $btn.onclick = function() {
+      dialog.show()
+    }
+  
+  </script>
+
+  
+</body>
+</html>
